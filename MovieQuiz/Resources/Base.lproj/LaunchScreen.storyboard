@@ -24,8 +24,8 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="22l-uu-w0i" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="66K-ZN-sZ3"/>
-                            <constraint firstItem="22l-uu-w0i" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="BVY-U3-LJm"/>
-                            <constraint firstItem="22l-uu-w0i" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="EAq-yk-DuF"/>
+                            <constraint firstItem="22l-uu-w0i" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="BVY-U3-LJm"/>
+                            <constraint firstItem="22l-uu-w0i" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="EAq-yk-DuF"/>
                             <constraint firstAttribute="bottom" secondItem="22l-uu-w0i" secondAttribute="bottom" id="Mzz-qN-fPW"/>
                         </constraints>
                     </view>

@@ -38,7 +38,7 @@
                                         </subviews>
                                     </stackView>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ADS-yP-QQd" userLabel="Preview Image">
-                                        <rect key="frame" x="0.0" y="43.666666666666629" width="400" height="600"/>
+                                        <rect key="frame" x="0.0" y="43.666666666666629" width="400" height="600.00000000000011"/>
                                         <color key="backgroundColor" name="YP White"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="ADS-yP-QQd" secondAttribute="height" multiplier="2:3" id="fBe-RZ-6TX"/>
@@ -66,6 +66,9 @@
                                                         <integer key="value" value="15"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="noButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="iYo-Qx-G2d"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k0C-S6-CnM" userLabel="YesButton">
                                                 <rect key="frame" x="210" y="0.0" width="190" height="60"/>
@@ -80,6 +83,9 @@
                                                         <integer key="value" value="15"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="yesButtonClicked:" destination="BYZ-38-t0r" eventType="touchDown" id="bP0-MG-BMm"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <constraints>
@@ -99,6 +105,11 @@
                             <constraint firstItem="MAL-u3-afF" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="eBZ-R8-Tsh"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="counterLabel" destination="tev-EP-tKh" id="eLw-0A-XTl"/>
+                        <outlet property="imageView" destination="ADS-yP-QQd" id="HNB-BU-GyE"/>
+                        <outlet property="textLabel" destination="K16-fe-qVU" id="D2U-5o-8md"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
