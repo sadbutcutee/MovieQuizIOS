@@ -48,6 +48,8 @@ final class MovieQuizViewController: UIViewController {
     
     @IBOutlet weak private var imageView: UIImageView!
     @IBOutlet weak private var counterLabel: UILabel!
+    @IBOutlet weak private var yesButton: UIButton!
+    @IBOutlet weak private var noButton: UIButton!
     @IBOutlet weak private var textLabel: UILabel!
     
     private var currentQuestionIndex = 0
@@ -57,6 +59,7 @@ final class MovieQuizViewController: UIViewController {
         super.viewDidLoad()
         let currentQuestion = questions[currentQuestionIndex]
         show(quiz: convert(model: currentQuestion))
+        showBounds()
     }
     
     private struct QuizStepViewModel {
@@ -86,11 +89,15 @@ final class MovieQuizViewController: UIViewController {
         return questionStep
     }
     
-    private func showAnswerResult(isCorrect: Bool) -> Void {
+    private func showBounds() -> Void {
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
-        imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
         imageView.layer.cornerRadius = 20
+    }
+    
+    private func showAnswerResult(isCorrect: Bool) -> Void {
+        disableButtons(state: true)
+        imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
         correctAnswers = isCorrect ? correctAnswers + 1 : correctAnswers
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -103,6 +110,16 @@ final class MovieQuizViewController: UIViewController {
         imageView.image = step.image
         counterLabel.text = step.questionNumber
         textLabel.text = step.question
+    }
+    
+    private func disableButtons(state: Bool) -> Void {
+        if state {
+            yesButton.isEnabled = false
+            noButton.isEnabled = false
+        } else {
+            yesButton.isEnabled = true
+            noButton.isEnabled = true
+        }
     }
     
     private func show(quiz result: QuizResultViewModel) {
@@ -127,7 +144,7 @@ final class MovieQuizViewController: UIViewController {
     
     private func showNextQuestionOrResults() -> Void {
         if currentQuestionIndex == questions.count - 1 {
-            let text = "Ваш результат: \(correctAnswers)/10" // 1
+            let text = "Ваш результат: \(correctAnswers)/10"
             let viewModel = QuizResultViewModel(
                 title: "раунд окончен!",
                 text: text,
@@ -141,6 +158,7 @@ final class MovieQuizViewController: UIViewController {
                     
             show(quiz: viewModel)
         }
+        disableButtons(state: false)
     }
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) -> Void {

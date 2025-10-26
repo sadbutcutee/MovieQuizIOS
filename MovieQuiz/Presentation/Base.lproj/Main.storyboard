@@ -38,11 +38,16 @@
                                         </subviews>
                                     </stackView>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ADS-yP-QQd" userLabel="Preview Image">
-                                        <rect key="frame" x="0.0" y="43.666666666666629" width="400" height="600.00000000000011"/>
+                                        <rect key="frame" x="0.0" y="43.666666666666629" width="400" height="600"/>
                                         <color key="backgroundColor" name="YP White"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="ADS-yP-QQd" secondAttribute="height" multiplier="2:3" id="fBe-RZ-6TX"/>
                                         </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Рейтинг этого фильма меньше, чем 5?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K16-fe-qVU" userLabel="Question Label">
                                         <rect key="frame" x="0.0" y="663.66666666666663" width="400" height="10.333333333333371"/>
@@ -62,7 +67,7 @@
                                                     <color key="titleColor" name="YP Black"/>
                                                 </state>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius ">
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                                         <integer key="value" value="15"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
@@ -79,7 +84,7 @@
                                                     <color key="titleColor" name="YP Black"/>
                                                 </state>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius ">
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                                         <integer key="value" value="15"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
@@ -108,7 +113,9 @@
                     <connections>
                         <outlet property="counterLabel" destination="tev-EP-tKh" id="eLw-0A-XTl"/>
                         <outlet property="imageView" destination="ADS-yP-QQd" id="HNB-BU-GyE"/>
+                        <outlet property="noButton" destination="xK9-dm-lHg" id="baD-Ch-UAL"/>
                         <outlet property="textLabel" destination="K16-fe-qVU" id="D2U-5o-8md"/>
+                        <outlet property="yesButton" destination="k0C-S6-CnM" id="ZIA-bH-oOS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
