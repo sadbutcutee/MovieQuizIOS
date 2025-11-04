@@ -14,6 +14,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private let questionsAmount: Int = 10
     private var questionFactory: QuestionFactoryProtocol = QuestionFactory()
     private var currentQuestion: QuizQuestion?
+    private var alertPresenter = AlertPresenter()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,6 +51,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         return questionStep
     }
     
+    private func restartGame() {
+            currentQuestionIndex = 0
+            correctAnswers = 0
+            questionFactory.requestNextQuestion()
+        }
+    
     private func showBounds() -> Void {
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
@@ -74,6 +81,16 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         textLabel.text = step.question
     }
     
+    private func show(quiz result: QuizResultViewModel) -> Void {
+        let model = AlertModel(title: result.title, message: result.text, buttonText: result.buttonText) { [weak self] in
+            guard let self = self else { return }
+            
+            self.restartGame()
+        }
+        
+        alertPresenter.show(in: self, model: model)
+    }
+    
     private func disableButtons(state: Bool) -> Void {
         if state {
             yesButton.isEnabled = false
@@ -82,24 +99,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             yesButton.isEnabled = true
             noButton.isEnabled = true
         }
-    }
-    
-    private func show(quiz result: QuizResultViewModel) {
-        let alert = UIAlertController(
-                title: result.title,
-                message: result.text,
-                preferredStyle: .alert)
-            
-        let action = UIAlertAction(title: result.buttonText, style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            self.currentQuestionIndex = 0
-            self.correctAnswers = 0
-                
-            self.questionFactory.requestNextQuestion()
-        }
-            
-        alert.addAction(action)
-        self.present(alert, animated: true, completion: nil)
     }
     
     private func showNextQuestionOrResults() -> Void {
