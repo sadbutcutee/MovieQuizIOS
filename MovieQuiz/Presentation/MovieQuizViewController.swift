@@ -12,7 +12,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
     private let questionsAmount: Int = 10
-    private var questionFactory: QuestionFactoryProtocol = QuestionFactory()
+    private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var alertPresenter = AlertPresenter()
     
@@ -20,7 +20,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         super.viewDidLoad()
         
         let questionFactory = QuestionFactory()
-        questionFactory.setup(delegate: self)
+        questionFactory.delegate = self
         self.questionFactory = questionFactory
         
         questionFactory.requestNextQuestion()
@@ -54,13 +54,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private func restartGame() {
             currentQuestionIndex = 0
             correctAnswers = 0
-            questionFactory.requestNextQuestion()
+            questionFactory?.requestNextQuestion()
         }
     
     private func showBounds() -> Void {
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
         imageView.layer.cornerRadius = 20
+        imageView.layer.borderColor = UIColor.clear.cgColor
     }
     
     private func showAnswerResult(isCorrect: Bool) -> Void {
@@ -113,7 +114,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             show(quiz: viewModel)
         } else {
             currentQuestionIndex += 1
-            questionFactory.requestNextQuestion()
+            questionFactory?.requestNextQuestion()
         }
         disableButtons(state: false)
     }
