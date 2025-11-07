@@ -15,9 +15,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var alertPresenter = AlertPresenter()
+    private var statisticService: StatisticServiceProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let statisticService = StatisticService()
+        self.statisticService = statisticService
         
         let questionFactory = QuestionFactory()
         questionFactory.delegate = self
@@ -82,8 +86,21 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         textLabel.text = step.question
     }
     
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.MM.yyyy HH:mm"
+        
+        return formatter.string(from: date)
+    }
+    
     private func show(quiz result: QuizResultViewModel) -> Void {
-        let model = AlertModel(title: result.title, message: result.text, buttonText: result.buttonText) { [weak self] in
+        let dateString = formatDate(statisticService?.bestGame.date ?? Date())
+        let bestGameText = "\nКоличество сыгранных квизов: \(statisticService?.gamesCount ?? 0)" +
+        "\n Рекорд \(statisticService?.bestGame.correct ?? 0)/10 (\(dateString))" +
+        "\n Средняя точность: \(String(format: "%.2f", statisticService?.totalAccuracy ?? 0.0))%"
+        
+        let resultText: String = result.text + bestGameText
+        let model = AlertModel(title: result.title, message: resultText, buttonText: result.buttonText) { [weak self] in
             guard let self = self else { return }
             
             self.restartGame()
@@ -104,11 +121,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func showNextQuestionOrResults() -> Void {
         if currentQuestionIndex == questionsAmount - 1 {
+            statisticService?.store(correct: correctAnswers, total: questionsAmount)
             let text = correctAnswers == questionsAmount ?
-                        "Поздравляем, вы ответили на 10 из 10!" :
-                        "Вы ответили на \(correctAnswers) из 10, попробуйте ещё раз!"
+                        "Ваш результат 10/10" :
+                        "Ваш результат: \(correctAnswers)/10"
             let viewModel = QuizResultViewModel(
-                title: "раунд окончен!",
+                title: "Этот раунд окончен!",
                 text: text,
                 buttonText: "Сыграть ещё раз")
             show(quiz: viewModel)
