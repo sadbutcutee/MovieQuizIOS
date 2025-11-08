@@ -95,12 +95,15 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func show(quiz result: QuizResultViewModel) -> Void {
         let dateString = formatDate(statisticService?.bestGame.date ?? Date())
-        let bestGameText = "\nКоличество сыгранных квизов: \(statisticService?.gamesCount ?? 0)" +
-        "\n Рекорд \(statisticService?.bestGame.correct ?? 0)/10 (\(dateString))" +
-        "\n Средняя точность: \(String(format: "%.2f", statisticService?.totalAccuracy ?? 0.0))%"
         
-        let resultText: String = result.text + bestGameText
-        let model = AlertModel(title: result.title, message: resultText, buttonText: result.buttonText) { [weak self] in
+        let text = """
+            \(result.text)
+            Количество сыгранных квизов: \(statisticService?.gamesCount ?? 0)
+            Рекорд \(statisticService?.bestGame.correct ?? 0)/10 (\(dateString))
+            Средняя точность: \(String(format: "%.2f", statisticService?.totalAccuracy ?? 0.0))%
+        """
+        
+        let model = AlertModel(title: result.title, message: text, buttonText: result.buttonText) { [weak self] in
             guard let self = self else { return }
             
             self.restartGame()
