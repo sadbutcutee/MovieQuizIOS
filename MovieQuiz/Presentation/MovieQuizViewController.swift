@@ -57,10 +57,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - Private functions
     
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
-        return QuizStepViewModel(
-                image: UIImage(data: model.image) ?? UIImage(),
-                question: model.text,
-                questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
+        QuizStepViewModel(
+            image: UIImage(data: model.image) ?? UIImage(),
+            question: model.text,
+            questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
     }
     
     private func restartGame() {
@@ -82,10 +82,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         hideLoadingIndicator()
         
        let model = AlertModel(
-        title: "Ошибка",
+        title: errorInfoText,
         message: message,
-        buttonText: "Попробовать еще раз") { [weak self] in
-            guard let self = self else { return }
+        buttonText: rebootTextForButton) { [weak self] in
+            guard let self else { return }
             self.currentQuestionIndex = 0
             self.correctAnswers = 0
             
