@@ -1,0 +1,104 @@
+//
+//  MovieQuizUITests.swift
+//  MovieQuizUITests
+//
+//  Created by Александр Гладков on 06.12.2025.
+//
+
+import XCTest
+
+final class MovieQuizUITests: XCTestCase {
+    
+    var app: XCUIApplication!
+
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        
+        app = XCUIApplication()
+        app.launch()
+        
+        continueAfterFailure = false
+
+        
+    }
+
+    override func tearDownWithError() throws {
+
+        try super.tearDownWithError()
+        
+        app.terminate()
+        app = nil
+    }
+    
+    func testYesButton() throws {
+        sleep(3)
+        let firstPoster = app.images["Poster"]
+        let firstPosterData = firstPoster.screenshot().pngRepresentation
+        XCTAssertTrue(firstPoster.exists)
+        
+        app.buttons["Yes"].tap()
+        sleep(3)
+        
+        let secondPoster = app.images["Poster"]
+        let secondPosterData = secondPoster.screenshot().pngRepresentation
+        XCTAssertTrue(secondPoster.exists)
+        
+        XCTAssertNotEqual(firstPosterData, secondPosterData)
+    }
+    
+    func testNoButton() throws {
+        sleep(3)
+        let firstPoster = app.images["Poster"]
+        let firstPosterData = firstPoster.screenshot().pngRepresentation
+        XCTAssertTrue(firstPoster.exists)
+        
+        app.buttons["No"].tap()
+        sleep(3)
+        
+        let secondPoster = app.images["Poster"]
+        let secondPosterData = secondPoster.screenshot().pngRepresentation
+        XCTAssertTrue(secondPoster.exists)
+        
+        XCTAssertNotEqual(firstPosterData, secondPosterData)
+    }
+    
+    func testIndex() throws {
+        app.buttons["Yes"].tap()
+        sleep(3)
+        let indexLabel = app.staticTexts["Index"]
+        XCTAssertEqual(indexLabel.label, "2/10")
+    }
+    
+    func testGameFinish() throws {
+        for _ in 1...10 {
+            app.buttons["Yes"].tap()
+            sleep(3)
+        }
+        
+        let alert = app.alerts["Game results"]
+        
+        sleep(3)
+        
+        XCTAssertTrue(alert.exists)
+        XCTAssertTrue(alert.label == "Этот раунд окончен!")
+        XCTAssert(alert.buttons.firstMatch.label == "Сыграть ещё раз")
+    }
+    
+    func testAlertDismiss() {
+        sleep(2)
+        for _ in 1...10 {
+            app.buttons["No"].tap()
+            sleep(2)
+        }
+        
+        let alert = app.alerts["Game results"]
+        alert.buttons.firstMatch.tap()
+        
+        sleep(2)
+        
+        let indexLabel = app.staticTexts["Index"]
+        
+        XCTAssertFalse(alert.exists)
+        XCTAssertTrue(indexLabel.label == "1/10")
+    }
+}
