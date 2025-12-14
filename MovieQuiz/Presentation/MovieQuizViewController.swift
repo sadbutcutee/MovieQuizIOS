@@ -20,6 +20,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        presenter.viewController = self
         let statisticService = StatisticService()
         self.statisticService = statisticService
         
@@ -94,7 +95,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         imageView.layer.borderColor = UIColor.clear.cgColor
     }
     
-    private func showAnswerResult(isCorrect: Bool) -> Void {
+    func showAnswerResult(isCorrect: Bool) -> Void {
         disableButtons(state: true)
         imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
         correctAnswers = isCorrect ? correctAnswers + 1 : correctAnswers
@@ -169,16 +170,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - Actions
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) -> Void {
-        guard let currentQuestion = currentQuestion else { return }
-        let givenAnswer = true
-            
-        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        presenter.currentQuestion = currentQuestion
+        presenter.yesButtonClicked()
     }
     
     @IBAction private func noButtonClicked(_ sender: UIButton) {
-        guard let currentQuestion = currentQuestion else { return }
-        let givenAnswer = false
-            
-        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        presenter.currentQuestion = currentQuestion
+        presenter.noButtonClicked()
     }
 }
