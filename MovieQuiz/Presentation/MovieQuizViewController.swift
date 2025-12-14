@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController {
+final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol {
     
     // MARK: - Lifecycle
     
@@ -12,17 +12,12 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet weak private var activityIndicator: UIActivityIndicatorView!
     
     private var alertPresenter = AlertPresenter()
-    private var statisticService: StatisticServiceProtocol?
     private var presenter: MovieQuizPresenter!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let statisticService = StatisticService()
-        self.statisticService = statisticService
         presenter = MovieQuizPresenter(viewController: self)
-        
-        presenter.statisticService = statisticService
         showBounds()
     }
     
@@ -40,13 +35,13 @@ final class MovieQuizViewController: UIViewController {
     func showNetworkError(message: String) -> Void {
         hideLoadingIndicator()
         
-       let model = AlertModel(
-        title: errorInfoText,
-        message: message,
-        buttonText: rebootTextForButton) { [weak self] in
-            guard let self else { return }
-            presenter.restartGame()
-        }
+        let model = AlertModel(
+            title: errorInfoText,
+            message: message,
+            buttonText: rebootTextForButton) { [weak self] in
+                guard let self else { return }
+                presenter.restartGame()
+            }
         
         alertPresenter.show(in: self, model: model)
     }
@@ -58,16 +53,12 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.borderColor = UIColor.clear.cgColor
     }
     
-    func showAnswerResult(isCorrect: Bool) -> Void {
-        presenter.disableButtons(state: true)
-        imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-        presenter.didAnswer(isCorrectAnswer: isCorrect)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self = self else { return }
-            self.imageView.layer.borderColor = UIColor.clear.cgColor
-            self.presenter.showNextQuestionOrResults()
-        }
+    func highlightImageBorder(isCorrectAnswer: Bool) {
+        imageView.layer.borderColor = isCorrectAnswer ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
+    }
+    
+    func clearImageBorder() {
+        imageView.layer.borderColor = UIColor.clear.cgColor
     }
     
     func show(quiz step: QuizStepViewModel) -> Void {
@@ -84,16 +75,8 @@ final class MovieQuizViewController: UIViewController {
     }
     
     func show(quiz result: QuizResultViewModel) -> Void {
-        let dateString = formatDate(statisticService?.bestGame.date ?? Date())
-        
-        let text = """
-            \(result.text)
-            Количество сыгранных квизов: \(statisticService?.gamesCount ?? 0)
-            Рекорд \(statisticService?.bestGame.correct ?? 0)/10 (\(dateString))
-            Средняя точность: \(String(format: "%.2f", statisticService?.totalAccuracy ?? 0.0))%
-        """
-        
-        let model = AlertModel(title: result.title, message: text, buttonText: result.buttonText) { [weak self] in
+        let message = presenter.makeResultsMessage()
+        let model = AlertModel(title: result.title, message: message, buttonText: result.buttonText) { [weak self] in
             guard let self = self else { return }
             
             presenter.restartGame()
