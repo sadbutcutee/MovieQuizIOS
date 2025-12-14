@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
+final class MovieQuizViewController: UIViewController {
     
     // MARK: - Lifecycle
     
@@ -11,62 +11,33 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBOutlet weak private var textLabel: UILabel!
     @IBOutlet weak private var activityIndicator: UIActivityIndicatorView!
     
-    private var correctAnswers = 0
-    private var questionFactory: QuestionFactoryProtocol?
     private var alertPresenter = AlertPresenter()
     private var statisticService: StatisticServiceProtocol?
-    private let presenter = MovieQuizPresenter()
+    private var presenter: MovieQuizPresenter!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let statisticService = StatisticService()
         self.statisticService = statisticService
+        presenter = MovieQuizPresenter(viewController: self)
         
         presenter.statisticService = statisticService
-        presenter.viewController = self
-        
-        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
-        
-        showLoadingIndicator()
-        questionFactory?.loadData()
-        
         showBounds()
-    }
-    
-    // MARK: - QuestionFactoryDelegate
-    
-    func didReceiveNextQuestion(question: QuizQuestion?) {
-        presenter.didReceiveNextQuestion(question: question)
-    }
-    
-    func didLoadDatafromServer() {
-        hideLoadingIndicator()
-        questionFactory?.requestNextQuestion()
-    }
-    
-    func didFailToLoadData(with error: Error) {
-        showNetworkError(message: error.localizedDescription)
     }
     
     // MARK: - Private functions
     
-    private func restartGame() {
-            presenter.resetQuestionIndex()
-            correctAnswers = 0
-            questionFactory?.requestNextQuestion()
-    }
-    
-    private func showLoadingIndicator() -> Void {
+    func showLoadingIndicator() -> Void {
         activityIndicator.isHidden = false
         activityIndicator.startAnimating()
     }
     
-    private func hideLoadingIndicator() -> Void {
+    func hideLoadingIndicator() -> Void {
         activityIndicator.isHidden = true
     }
     
-    private func showNetworkError(message: String) -> Void {
+    func showNetworkError(message: String) -> Void {
         hideLoadingIndicator()
         
        let model = AlertModel(
@@ -74,10 +45,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         message: message,
         buttonText: rebootTextForButton) { [weak self] in
             guard let self else { return }
-            self.presenter.resetQuestionIndex()
-            self.correctAnswers = 0
-            
-            self.questionFactory?.requestNextQuestion()
+            presenter.restartGame()
         }
         
         alertPresenter.show(in: self, model: model)
@@ -93,13 +61,11 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     func showAnswerResult(isCorrect: Bool) -> Void {
         presenter.disableButtons(state: true)
         imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-        correctAnswers = isCorrect ? correctAnswers + 1 : correctAnswers
+        presenter.didAnswer(isCorrectAnswer: isCorrect)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             self.imageView.layer.borderColor = UIColor.clear.cgColor
-            self.presenter.correctAnswers = self.correctAnswers
-            self.presenter.questionFactory = self.questionFactory
             self.presenter.showNextQuestionOrResults()
         }
     }
@@ -130,7 +96,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         let model = AlertModel(title: result.title, message: text, buttonText: result.buttonText) { [weak self] in
             guard let self = self else { return }
             
-            self.restartGame()
+            presenter.restartGame()
         }
         
         alertPresenter.show(in: self, model: model)
