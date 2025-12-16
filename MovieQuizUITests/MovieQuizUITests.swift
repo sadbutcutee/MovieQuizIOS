@@ -75,7 +75,7 @@ final class MovieQuizUITests: XCTestCase {
             sleep(3)
         }
         
-        let alert = app.alerts["Game results"]
+        let alert = app.alerts["Этот раунд окончен!"]
         
         sleep(3)
         
@@ -84,14 +84,14 @@ final class MovieQuizUITests: XCTestCase {
         XCTAssert(alert.buttons.firstMatch.label == "Сыграть ещё раз")
     }
     
-    func testAlertDismiss() {
+    func testAlertDismiss() throws {
         sleep(2)
         for _ in 1...10 {
             app.buttons["No"].tap()
             sleep(2)
         }
         
-        let alert = app.alerts["Game results"]
+        let alert = app.alerts["Этот раунд окончен!"]
         alert.buttons.firstMatch.tap()
         
         sleep(2)
