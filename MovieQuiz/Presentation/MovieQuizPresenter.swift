@@ -97,14 +97,14 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         guard let currentQuestion = currentQuestion else { return }
         let givenAnswer = true
             
-        proceedWithAnswer(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        proceedWithAnswer(isCorrect: currentQuestion.correctAnswer)
     }
     
     func noButtonClicked() {
         guard let currentQuestion = currentQuestion else { return }
         let givenAnswer = false
             
-        proceedWithAnswer(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        proceedWithAnswer(isCorrect: !currentQuestion.correctAnswer)
     }
     
     func didReceiveNextQuestion(question: QuizQuestion?) {
